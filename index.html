@@ -2,6 +2,7 @@
 <html>
   <head>
     <script src="https://unpkg.com/ag-grid/dist/ag-grid.min.noStyle.js"></script>
+    <script src="dateFormat.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/ag-grid/dist/styles/ag-grid.css">
     <link rel="stylesheet" href="https://unpkg.com/ag-grid/dist/styles/ag-theme-balham.css">
 
@@ -17,6 +18,7 @@
     <script type="text/javascript" charset="utf-8">
       // specify the columns
       var columnDefs = [
+        {headerName: "Date", field: "date", width: 200, type: ['dateColumn'], valueFormatter: dateToLocal},
         {headerName: "First", field: "first_name"},
         {headerName: "Last", field: "last_name"},
         {headerName: "Phone", field: "phone"},
@@ -25,15 +27,45 @@
         {headerName: "Zip Code", field: "zip"},
         {headerName: "URL", field: "url"},
         {headerName: "Vendor Name", field: "vendor"},
-        {headerName: "IP Address", field: "ip"}
+        {headerName: "IP Address", field: "ip"},
+        {headerName: "Response", field: "response", width: 250 }
       ];
+
+      var columnTypes = {
+        "dateColumn": {filter: 'agDateColumnFilter',  filterParams: {
+          // provide comparator function
+          comparator: function(filterLocalDateAtMidnight, cellValue) {
+              // In the example application, dates are stored as dd/mm/yyyy
+              // We create a Date object for comparison against the filter date
+              var dateParts = cellValue.split('/');
+              var day = Number(dateParts[2]);
+              var month = Number(dateParts[1]) - 1;
+              var year = Number(dateParts[0]);
+              var cellDate = new Date(day, month, year);
+
+              // Now that both parameters are Date objects, we can compare
+              if (cellDate < filterLocalDateAtMidnight) {
+                  return -1;
+              } else if (cellDate > filterLocalDateAtMidnight) {
+                  return 1;
+              } else {
+                  return 0;
+              }
+            }
+          }
+        }
+      }
 
       // let the grid know which columns and what data to use
       var gridOptions = {
         enableSorting: true,
         enableFilter: true,
         columnDefs: columnDefs,
-        rowSelection: 'multiple'
+        columnTypes: columnTypes,
+        rowSelection: 'multiple',
+        onRowDataChanged: function(params) {
+          //gridOptions.api.sizeColumnsToFit();
+        }
       };
 
     // lookup the container we want the Grid to use
@@ -53,6 +85,11 @@
       var selectedData = selectedNodes.map( function(node) { return node.data })
       var selectedDataStringPresentation = selectedData.map( function(node) { return node.id }).join(', ')
       alert('Selected nodes: ' + selectedDataStringPresentation);
+    }
+
+    function dateToLocal(params) {
+      let m = new Date(params.value);
+      return DateFormat.format.date(m, 'yyyy/MM/dd hh:mm:ss a');
     }
 
     </script>
