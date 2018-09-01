@@ -28,7 +28,8 @@
         {headerName: "URL", field: "url"},
         {headerName: "Vendor Name", field: "vendor"},
         {headerName: "IP Address", field: "ip"},
-        {headerName: "Response", field: "response", width: 250 }
+        {headerName: "Response", field: "accepted" },
+        {headerName: "Errors", field: "errors", cellStyle: {'white-space': 'normal'} }
       ];
 
       var columnTypes = {
@@ -62,9 +63,10 @@
         enableFilter: true,
         columnDefs: columnDefs,
         columnTypes: columnTypes,
+        enableColResize: true,
         rowSelection: 'multiple',
         onRowDataChanged: function(params) {
-          //gridOptions.api.sizeColumnsToFit();
+          gridOptions.api.sizeColumnsToFit();
         }
       };
 

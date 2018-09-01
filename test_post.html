@@ -22,33 +22,6 @@
 
     <script type="text/javascript">
 
-    $(function() {
-      $( "form" ).submit(function( event ) {
-        let formData = $( this ).serializeArray();
-        let postData = {};
-        $.each(formData, (num) => {
-          postData[formData[num].name] = formData[num].value
-        })
-
-        console.log(postData)
-
-        $.ajax({
-          type: 'POST',
-          url: 'https://b2bs80vdrl.execute-api.us-west-2.amazonaws.com/Prototype/call',
-          data: JSON.stringify(postData),
-          dataType: 'json',
-          error: function(jqXHR, textStatus, errorThrown) {
-              console.log(textStatus, errorThrown); //error logging
-          },
-          success: function(data) {
-            $('#output').html(JSON.stringify(data.response))
-          }
-        })
-
-        event.preventDefault();
-      });
-    })
-
     </script>
 
   </head>
@@ -59,7 +32,7 @@
 
     <hr/>
 
-    <form method="POST" action="">
+    <form method="POST" action="https://b2bs80vdrl.execute-api.us-west-2.amazonaws.com/Prototype/call">
       <div class="formField">
         <label for="txtFirstName">First Name</label>
         <input type="text" id="txtFirstName" name="first_name" />
